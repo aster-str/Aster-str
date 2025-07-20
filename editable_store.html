@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>متجري</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {{ font-family: Tahoma, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }}
+    header {{ background: #6a5acd; padding: 20px; color: white; text-align: center; font-size: 24px; }}
+    .container {{ max-width: 600px; margin: 30px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }}
+    .product-img {{ width: 100%; border-radius: 10px; }}
+    .price {{ font-size: 20px; color: #e91e63; }}
+    label {{ display: block; margin-top: 15px; font-weight: bold; }}
+    input, select {{ width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc; }}
+    button {{
+      background: #25D366; color: white; border: none; padding: 12px; margin-top: 20px;
+      width: 100%; border-radius: 6px; font-size: 16px; cursor: pointer;
+    }}
+  </style>
+</head>
+<body>
+
+<header>🛍️ متجر العناية</header>
+
+<div class="container">
+  <h2>💖 اسم المنتج: سيروم التفتيح</h2>
+  <img class="product-img" src="https://via.placeholder.com/400x400" alt="صورة المنتج">
+  <p>✨ يوحد اللون ويعطي نضارة من أول أسبوع</p>
+  <p class="price">السعر: 12 ريال عماني</p>
+
+  <form id="orderForm">
+    <label>الاسم الكامل:</label>
+    <input type="text" id="name" required>
+
+    <label>الدولة:</label>
+    <input type="text" id="country" required>
+
+    <label>المحافظة / المنطقة:</label>
+    <input type="text" id="region" required>
+
+    <label>رقم الهاتف:</label>
+    <input type="text" id="phone" required>
+
+    <label>طريقة الدفع:</label>
+    <select id="payment">
+      <option>عند الاستلام</option>
+      <option>تحويل بنكي</option>
+      <option>محفظة إلكترونية</option>
+    </select>
+
+    <button type="button" onclick="sendWhatsApp()">إرسال الطلب عبر واتساب</button>
+  </form>
+</div>
+
+<script>
+  function sendWhatsApp() {{
+    var name = document.getElementById("name").value;
+    var country = document.getElementById("country").value;
+    var region = document.getElementById("region").value;
+    var phone = document.getElementById("phone").value;
+    var payment = document.getElementById("payment").value;
+
+    var msg = "مرحباً 👋\nأرغب في طلب سيروم التفتيح\n"
+            + "الاسم: " + name + "\n"
+            + "الدولة: " + country + "\n"
+            + "المنطقة: " + region + "\n"
+            + "رقم الهاتف: " + phone + "\n"
+            + "طريقة الدفع: " + payment;
+
+    // استبدلي الرقم برقمك مع كود الدولة (مثال: 96891234567)
+    var whatsappNumber = "96891234567";
+    var url = "https://wa.me/" + whatsappNumber + "?text=" + encodeURIComponent(msg);
+    window.open(url, "_blank");
+  }}
+</script>
+
+</body>
+</html>
