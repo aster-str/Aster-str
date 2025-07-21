@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>متجري للعناية</title>
+  <style>
+    body { font-family: Arial; direction: rtl; padding: 20px; }
+    .admin, .store { display: none; margin-top: 20px; }
+    .product { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+<h1>🌸 متجري للعناية بالبشرة والشعر 🌸</h1>
+
+<!-- زر دخول المالك -->
+<button onclick="toggleAdmin()">👩‍💼 دخول المالك</button>
+
+<!-- خانة المالك -->
+<div class="admin" id="adminPanel">
+  <h2>لوحة تحكم المالك</h2>
+
+  <button onclick="showAddProduct()">➕ إضافة منتج</button>
+  <button onclick="showShipping()">📦 إعداد الشحن</button>
+  <button onclick="viewOrders()">📊 عرض الطلبات</button>
+
+  <div id="addProductDiv" class="hidden">
+    <h3>إضافة منتج</h3>
+    <input id="pName" placeholder="اسم المنتج"><br>
+    <input id="pPrice" placeholder="السعر"><br>
+    <input id="pSize" placeholder="الحجم"><br>
+    <input id="pInfo" placeholder="معلومات"><br>
+    <select id="pStock">
+      <option>متوفر بكثرة</option>
+      <option>كمية محدودة</option>
+    </select><br>
+    <input id="pImg" placeholder="رابط صورة"><br>
+    <button onclick="addProduct()">✅ حفظ</button>
+  </div>
+
+  <div id="shippingDiv" class="hidden">
+    <h3>إعداد الشحن</h3>
+    <input id="shipCountry" placeholder="اسم الدولة"><br>
+    <input id="shipPrice" placeholder="سعر الشحن"><br>
+    <button onclick="saveShipping()">✅ حفظ الدولة</button>
+  </div>
+
+  <div id="ordersDiv" class="hidden">
+    <h3>📋 الطلبات</h3>
+    <div id="orderList"></div>
+  </div>
+</div>
+
+<!-- خانة الزوار (المتجر) -->
+<div class="store" id="storePanel">
+  <h2>🛍️ المنتجات المتوفرة</h2>
+  <div id="productList"></div>
+
+  <h3>سلة الشراء</h3>
+  <div id="cartItems"></div>
+  <p>المجموع: <span id="totalPrice">0</span> ريال</p>
+
+  <input id="fullName" placeholder="اسمك الكامل"><br>
+  <input id="phone" placeholder="رقم التلفون"><br>
+  <input id="region" placeholder="المنطقة / الدولة"><br>
+  <button onclick="checkout()">💳 ادفع عبر PayPal</button>
+</div>
+
+<script>
+let products = JSON.parse(localStorage.getItem("products")) || [];
+let cart = [];
+let shipping = JSON.parse(localStorage.getItem("shipping")) || {};
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+function toggleAdmin() {
+  document.getElementById("adminPanel").style.display = "block";
+  document.getElementById("storePanel").style.display = "none";
+}
+
+function showAddProduct() {
+  document.getElementById("addProductDiv").classList.toggle("hidden");
+}
+
+function showShipping() {
+  document.getElementById("shippingDiv").classList.toggle("hidden");
+}
+
+function viewOrders() {
+  document.getElementById("ordersDiv").classList.toggle("hidden");
+  let out = "";
+  orders.forEach(o => {
+    out += `<p>👤 ${o.name} | 💵 ${o.total} ريال | 📦 ${o.region} | ☎️ ${o.phone}</p>`;
+  });
+  document.getElementById("orderList").innerHTML = out;
+}
+
+function addProduct() {
+  let p = {
+    name: document.getElementById("pName").value,
+    price: parseFloat(document.getElementById("pPrice").value),
+    size: document.getElementById("pSize").value,
+    info: document.getElementById("pInfo").value,
+    stock: document.getElementById("pStock").value,
+    img: document.getElementById("pImg").value
+  };
+  products.push(p);
+  localStorage.setItem("products", JSON.stringify(products));
+  alert("تم إضافة المنتج ✅");
+  showProducts();
+}
+
+function showProducts() {
+  document.getElementById("storePanel").style.display = "block";
+  let out = "";
+  products.forEach((p, i) => {
+    out += `<div class="product">
+      <img src="${p.img}" width="100"><br>
+      <strong>${p.name}</strong><br>
+      💵 ${p.price} ريال | ⚖️ ${p.size}<br>
+      📝 ${p.info}<br>
+      🔢 ${p.stock}<br>
+      <button onclick="addToCart(${i})">🛒 أضف للسلة</button>
+    </div>`;
+  });
+  document.getElementById("productList").innerHTML = out;
+}
+
+function addToCart(i) {
+  cart.push(products[i]);
+  showCart();
+}
+
+function showCart() {
+  let out = "", total = 0;
+  cart.forEach(p => {
+    out += `<p>${p.name} - ${p.price} ريال</p>`;
+    total += p.price;
+  });
+  document.getElementById("cartItems").innerHTML = out;
+  document.getElementById("totalPrice").innerText = total;
+}
+
+function saveShipping() {
+  let c = document.getElementById("shipCountry").value;
+  let p = document.getElementById("shipPrice").value;
+  shipping[c] = p;
+  localStorage.setItem("shipping", JSON.stringify(shipping));
+  alert("تم حفظ سعر الشحن ✅");
+}
+
+function checkout() {
+  let name = document.getElementById("fullName").value;
+  let phone = document.getElementById("phone").value;
+  let region = document.getElementById("region").value;
+  let total = cart.reduce((a, b) => a + b.price, 0);
+  orders.push({ name, phone, region, total });
+  localStorage.setItem("orders", JSON.stringify(orders));
+
+  alert("✅ تم الطلب بنجاح، سيتم توجيهك إلى PayPal الآن");
+  window.open("https://www.paypal.me/yourusername", "_blank");
+}
+showProducts();
+</script>
+
+</body>
+</html>
