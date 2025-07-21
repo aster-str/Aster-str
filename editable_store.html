@@ -1,79 +1,100 @@
-
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <title>متجري</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>متجري الإلكتروني</title>
   <style>
-    body {{ font-family: Tahoma, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }}
-    header {{ background: #6a5acd; padding: 20px; color: white; text-align: center; font-size: 24px; }}
-    .container {{ max-width: 600px; margin: 30px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }}
-    .product-img {{ width: 100%; border-radius: 10px; }}
-    .price {{ font-size: 20px; color: #e91e63; }}
-    label {{ display: block; margin-top: 15px; font-weight: bold; }}
-    input, select {{ width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc; }}
-    button {{
-      background: #25D366; color: white; border: none; padding: 12px; margin-top: 20px;
-      width: 100%; border-radius: 6px; font-size: 16px; cursor: pointer;
-    }}
+    body {
+      font-family: sans-serif;
+      direction: rtl;
+      text-align: center;
+      background-color: #f9f9f9;
+      padding: 20px;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    input, textarea, button, select {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #0070ba;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005fa3;
+    }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h2 id="productName">اسم المنتج هنا</h2>
+    <img id="productImage" src="https://via.placeholder.com/400x300" alt="صورة المنتج" />
+    <p id="productDescription">وصف بسيط للمنتج يكتب هنا...</p>
+    <h3 id="productPrice">السعر: 0.00 ر.ع</h3>
 
-<header>🛍️ متجر العناية</header>
+    <!-- نموذج بيانات العميل -->
+    <form id="orderForm">
+      <input type="text" name="name" placeholder="الاسم الكامل" required />
+      <input type="tel" name="phone" placeholder="رقم الهاتف" required />
+      <input type="text" name="country" placeholder="البلد" required />
+      <textarea name="notes" placeholder="ملاحظات إضافية (اختياري)"></textarea>
+      <button type="submit">إرسال الطلب</button>
+    </form>
 
-<div class="container">
-  <h2>💖 اسم المنتج: سيروم التفتيح</h2>
-  <img class="product-img" src="https://via.placeholder.com/400x400" alt="صورة المنتج">
-  <p>✨ يوحد اللون ويعطي نضارة من أول أسبوع</p>
-  <p class="price">السعر: 12 ريال عماني</p>
+    <!-- زر الدفع PayPal -->
+    <a id="paypalLink" href="https://paypal.me/YourName/0.00" target="_blank">
+      <button style="margin-top: 15px;">🔐 الدفع عبر PayPal</button>
+    </a>
 
-  <form id="orderForm">
-    <label>الاسم الكامل:</label>
-    <input type="text" id="name" required>
+    <!-- قسم تعديل المنتج -->
+    <hr />
+    <h4>تعديل المنتج (خاص لصاحب المتجر)</h4>
+    <input type="text" id="newName" placeholder="اسم المنتج" />
+    <input type="text" id="newDesc" placeholder="وصف المنتج" />
+    <input type="number" id="newPrice" placeholder="السعر (ريال)" step="0.01" />
+    <input type="text" id="newImage" placeholder="رابط صورة المنتج" />
+    <input type="text" id="newPayPal" placeholder="رابط PayPal للدفع" />
+    <button onclick="updateProduct()">تحديث المنتج</button>
+  </div>
 
-    <label>الدولة:</label>
-    <input type="text" id="country" required>
+  <script>
+    function updateProduct() {
+      const name = document.getElementById('newName').value;
+      const desc = document.getElementById('newDesc').value;
+      const price = document.getElementById('newPrice').value;
+      const image = document.getElementById('newImage').value;
+      const paypal = document.getElementById('newPayPal').value;
 
-    <label>المحافظة / المنطقة:</label>
-    <input type="text" id="region" required>
+      if (name) document.getElementById('productName').innerText = name;
+      if (desc) document.getElementById('productDescription').innerText = desc;
+      if (price) document.getElementById('productPrice').innerText = "السعر: " + price + " ر.ع";
+      if (image) document.getElementById('productImage').src = image;
+      if (paypal && price) document.getElementById('paypalLink').href = paypal + '/' + price;
+    }
 
-    <label>رقم الهاتف:</label>
-    <input type="text" id="phone" required>
-
-    <label>طريقة الدفع:</label>
-    <select id="payment">
-      <option>عند الاستلام</option>
-      <option>تحويل بنكي</option>
-      <option>محفظة إلكترونية</option>
-    </select>
-
-    <button type="button" onclick="sendWhatsApp()">إرسال الطلب عبر واتساب</button>
-  </form>
-</div>
-
-<script>
-  function sendWhatsApp() {{
-    var name = document.getElementById("name").value;
-    var country = document.getElementById("country").value;
-    var region = document.getElementById("region").value;
-    var phone = document.getElementById("phone").value;
-    var payment = document.getElementById("payment").value;
-
-    var msg = "مرحباً 👋\nأرغب في طلب سيروم التفتيح\n"
-            + "الاسم: " + name + "\n"
-            + "الدولة: " + country + "\n"
-            + "المنطقة: " + region + "\n"
-            + "رقم الهاتف: " + phone + "\n"
-            + "طريقة الدفع: " + payment;
-
-    // استبدلي الرقم برقمك مع كود الدولة (مثال: 96891234567)
-    var whatsappNumber = "96891234567";
-    var url = "https://wa.me/" + whatsappNumber + "?text=" + encodeURIComponent(msg);
-    window.open(url, "_blank");
-  }}
-</script>
-
+    // منع إرسال النموذج
+    document.getElementById('orderForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('تم إرسال الطلب بنجاح ✅ سيتم التواصل معك قريبًا!');
+    });
+  </script>
 </body>
 </html>
